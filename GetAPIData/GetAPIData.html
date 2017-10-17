@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>GET API Data Sample</title>
+    <style type="text/css">
+        #main {
+            background-color: #dededf;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11pt;
+            width: 450px;
+        }
+
+            #main ul {
+                list-style-type: none;
+                padding-left: 10px;
+            }
+
+            #main .right input {
+                width: 300px;
+                border-radius: 5px;
+            }
+
+        .left {
+            float: left;
+            width: 120px;
+        }
+
+        .right {
+            float: left;
+            width: 330px;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+            .clear input {
+                margin: 5px;
+
+            }
+
+        .results tr:nth-child(odd) {
+            background: #fff;
+        }
+
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        function getAllPosts() {
+            $('.results tr').remove();
+            var wpApi = $('#wp-url').val();
+            var pNum = $('#wp-pNum').val();
+
+
+            $.getJSON(wpApi + "/wp-json/wp/v2/posts?per_page=" + pNum, { format: "json" })
+                .done(function (data) {
+                    $.each(data, function (i, item) {
+                        $('<tr><td>' + data[i].title.rendered + '</td> <td> ' + data[i].link + ' </td> </tr>').appendTo('.results');
+                    });
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    var err = textStatus + ", " + error;
+                    console.log("Request Failed: " + err);
+                });
+        }
+
+    </script>
+</head>
+<body>
+    <form onSubmit="return false">
+        <div id="main">
+            <div class="left">
+                <ul>
+                    <li> Site URL: </li>
+                    <li> Posts (num): </li>
+                </ul>
+            </div>
+            <div class="right">
+                <ul>
+                    <li>
+                        <input type="url" id="wp-url" pattern="https?://.+" placeholder="http://tarcisiogambin.net/blog" required />
+                    </li>
+                    <li> <input type="number" id="wp-pNum" required min="1" max="100" /> </li>
+                </ul>
+            </div>
+            <div class="clear" />
+            <input type="submit" value="Procurar" onclick="getAllPosts()" />
+            <table class="results"></table>
+        </div>
+    </form>
+</body>
+</html>
