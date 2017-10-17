@@ -5,55 +5,24 @@
     <meta charset="utf-8" />
     <title>GET API Data Sample</title>
     <style type="text/css">
-        #main {
-            background-color: #dededf;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 11pt;
-            width: 450px;
-        }
-
-            #main ul {
-                list-style-type: none;
-                padding-left: 10px;
-            }
-
-            #main .right input {
-                width: 300px;
-                border-radius: 5px;
-            }
-
-        .left {
-            float: left;
-            width: 120px;
-        }
-
-        .right {
-            float: left;
-            width: 330px;
-        }
-
-        .clear {
-            clear: both;
-        }
-
-            .clear input {
-                margin: 5px;
-
-            }
-
-        .results tr:nth-child(odd) {
-            background: #fff;
-        }
-
+        #main{background-color:#dededf;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size:11pt;width:450px;}
+        #main p{text-align:center;}
+        #main ul{list-style-type:none;padding-left:10px;}
+        #main .right input{width:300px;border-radius:5px;}
+        .left{float:left;width:120px;}
+        .right{float:left;width:330px;}
+        .clear{clear:both;}
+        .clear input{margin:5px;}
+        .results tr:nth-child(odd){background:#fff;}
+        .results{width:100%;}
     </style>
-    <script type="text/javascript" src="://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script>
         function getAllPosts() {
+            $('input[type="submit"]').attr({ 'value': 'Procurando...', 'disabled': 'disabled' });
             $('.results tr').remove();
             var wpApi = $('#wp-url').val();
             var pNum = $('#wp-pNum').val();
-
-
             $.getJSON(wpApi + "/wp-json/wp/v2/posts?per_page=" + pNum, { format: "json" })
                 .done(function (data) {
                     $.each(data, function (i, item) {
@@ -63,14 +32,19 @@
                 .fail(function (jqxhr, textStatus, error) {
                     var err = textStatus + ", " + error;
                     console.log("Request Failed: " + err);
+                    $('<tr><td>Ocorreu um erro na requisição.</td></tr>').appendTo('.results');
+                })
+                .complete(function () {
+                    $('input[type="submit"]').attr('value', 'Procurar');
+                    $('input[type="submit"]').removeAttr('disabled');
                 });
         }
-
     </script>
 </head>
 <body>
     <form onSubmit="return false">
         <div id="main">
+            <p>Pesquisa de posts em blogs usando WordPress REST API</p>
             <div class="left">
                 <ul>
                     <li> Site URL: </li>
